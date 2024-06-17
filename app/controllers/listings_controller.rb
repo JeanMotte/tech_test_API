@@ -1,6 +1,6 @@
 class ListingsController < ApplicationController
 
-  before_action :set_goat, only: [:show, :edit, :update, :destroy]
+  before_action :set_listing, only: [:show, :edit, :update, :destroy]
 
   def index
     @listings = Listing.all
@@ -38,6 +38,7 @@ class ListingsController < ApplicationController
 
   def destroy
     @listing.destroy
+    head :no_content
   end
 
   private

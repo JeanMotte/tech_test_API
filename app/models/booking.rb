@@ -6,6 +6,7 @@ class Booking < ApplicationRecord
   validates :status, inclusion: { in: %w[pending confirmed cancelled] }
 
   before_destroy :cancel_reservations
+  after_update :cancel_reservations_if_cancelled, if: :saved_change_to_status?
 
   private
 
@@ -18,6 +19,14 @@ class Booking < ApplicationRecord
   def cancel_reservations
     Reservation.where(listing_id: listing_id)
       .where("start_date < ? AND end_date > ?", end_date, start_date)
+      .update_all(status: 'cancelled')
+  end
+
+  def cancel_reservations_if_cancelled
+    return unless status == 'cancelled'
+
+    Reservation.where(listing_id: listing_id)
+      .where("start_date >= ? AND end_date <= ?", start_date, end_date)
       .update_all(status: 'cancelled')
   end
 

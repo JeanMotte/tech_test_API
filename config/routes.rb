@@ -10,9 +10,8 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   resources :listings do
-    resources :bookings, only: [:new, :create, :edit, :update] do
-      resources :reservations, only: [:new, :create, :edit, :update]
-    end
+    resources :bookings, only: [:show, :new, :create, :edit, :update]
+    resources :reservations, only: [:show, :new, :create, :edit, :update]
   end
 
 end
