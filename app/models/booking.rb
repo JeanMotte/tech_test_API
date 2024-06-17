@@ -7,7 +7,7 @@ class Booking < ApplicationRecord
 
   before_destroy :cancel_reservations
   after_update :cancel_reservations_if_cancelled, if: :saved_change_to_status?
-  after_create :create_missions
+  # after_create :create_missions
 
   private
 
