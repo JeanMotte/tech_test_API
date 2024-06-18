@@ -7,7 +7,7 @@ class Booking < ApplicationRecord
 
   before_destroy :cancel_reservations
   after_update :cancel_reservations_if_cancelled, if: :saved_change_to_status?
-  # after_create :create_missions
+  after_create :create_missions
 
   private
 
@@ -33,8 +33,8 @@ class Booking < ApplicationRecord
 
   def create_missions
     listing.bookings.each do |booking|
-      listing.missions.create(listing: listing, mission_type: 'first_checkin', price: 10 * listing.num_rooms, date: booking.start_date)
-      listing.missions.create(listing: listing, mission_type: 'last_checkout', price: 5 * listing.num_rooms, date: booking.end_date)
+      listing.missions.create!(listing: listing, mission_type: 'first_checkin', price: 10 * listing.num_rooms, date: booking.start_date)
+      listing.missions.create!(listing: listing, mission_type: 'last_checkout', price: 5 * listing.num_rooms, date: booking.end_date)
     end
   end
 

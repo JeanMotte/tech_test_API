@@ -1,13 +1,16 @@
 class MissionsController < ApplicationController
 
   def index
-    @missions = Mission.all
+    @missions = @listing.missions
     render json: @missions
   end
 
   def show
     @mission = Mission.find(params[:id])
     render json: @mission
+  end
+
+  def create
   end
 
   # def update
@@ -18,6 +21,9 @@ class MissionsController < ApplicationController
   #     render json: @mission.errors, status: :unprocessable_entity
   #   end
   # end
+
+  def destroy
+  end
 
   private
 
