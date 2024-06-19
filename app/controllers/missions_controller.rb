@@ -1,5 +1,7 @@
 class MissionsController < ApplicationController
 
+  before_action :set_listing
+
   def index
     @missions = @listing.missions
     render json: @missions
@@ -26,6 +28,10 @@ class MissionsController < ApplicationController
   end
 
   private
+
+  def set_listing
+    @listing = Listing.find(params[:listing_id])
+  end
 
   def mission_params
     params.require(:mission).permit(:status)

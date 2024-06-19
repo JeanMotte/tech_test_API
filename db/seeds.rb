@@ -1,4 +1,5 @@
 puts "deleting existing data"
+Mission.delete_all
 Booking.delete_all
 Reservation.delete_all
 Listing.delete_all

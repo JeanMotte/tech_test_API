@@ -4,11 +4,11 @@ class ListingsController < ApplicationController
 
   def index
     @listings = Listing.all
-    render json: @listings
+    render json: { listings: @listings}
   end
 
   def show
-    render json: @listing
+    render json: { listing: @listing }
   end
 
   def new
@@ -19,7 +19,7 @@ class ListingsController < ApplicationController
     @listing = Listing.new(listing_params)
 
     if @listing.save
-      render json: @listing, status: :created, location: @listing
+      render json: { listing: @listing }
     else
       render json: @listing.errors, status: :unprocessable_entity
     end
@@ -32,7 +32,7 @@ class ListingsController < ApplicationController
     if @listing.update(listing_params)
       render json: @listing
     else
-      render json: @listing.errors, status: :unprocessable_entity
+      render json: @listing.errors.details, status: :unprocessable_entity
     end
   end
 

@@ -6,7 +6,7 @@ class Booking < ApplicationRecord
   validates :status, inclusion: { in: %w[pending confirmed cancelled] }
 
   before_destroy :cancel_reservations
-  after_update :cancel_reservations_if_cancelled, if: :saved_change_to_status?
+  after_update :cancel_reservations_if_cancelled
   after_create :create_missions
 
   private
@@ -17,24 +17,27 @@ class Booking < ApplicationRecord
     end
   end
 
-  def cancel_reservations
-    Reservation.where(listing_id: listing_id)
-      .where("start_date < ? AND end_date > ?", end_date, start_date)
-      .update_all(status: 'cancelled')
-  end
+  # def cancel_reservations
+  #   Reservation.where(listing_id: listing_id)
+  #     .where("start_date < ? AND end_date > ?", end_date, start_date)
+  #     .update_all(status: 'cancelled')
+  # end
 
   def cancel_reservations_if_cancelled
-    return unless status == 'cancelled'
+    # return unless status == 'cancelled'
 
     Reservation.where(listing_id: listing_id)
       .where("start_date >= ? AND end_date <= ?", start_date, end_date)
-      .update_all(status: 'cancelled')
+      .delete_all
   end
 
   def create_missions
     listing.bookings.each do |booking|
       listing.missions.create!(listing: listing, mission_type: 'first_checkin', price: 10 * listing.num_rooms, date: booking.start_date)
-      listing.missions.create!(listing: listing, mission_type: 'last_checkout', price: 5 * listing.num_rooms, date: booking.end_date)
+      last_checkout = listing.missions.create!(listing: listing, mission_type: 'last_checkout', price: 5 * listing.num_rooms, date: booking.end_date)
+      listing.reservations.each do |reservation|
+        checkin_checkout = listing.missions.create!(listing: listing, mission_type: 'checkout_checkin', price: 10 * listing.num_rooms, date: reservation.end_date) unless last_checkout.date == checkin_checkout.date
+      end
     end
   end
 
